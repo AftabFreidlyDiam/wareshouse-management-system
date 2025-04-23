@@ -3,9 +3,9 @@
 namespace App\Http\LivewireApi\Receiving\Pages;
 
 use Livewire\Component;
-use App\Models\Receiving;
 use Illuminate\Http\JsonResponse;
-
+use App\Models\GoodsTransaction;
+use Illuminate\Database\Eloquent\Builder;
 
 
 
@@ -15,7 +15,7 @@ class IndexPage extends Component
 
     public function builder(): Builder
     {
-        return GoodsTransaction::with(['creator', 'supplier'])
+        return GoodsTransaction::with(['creator', 'supplier','items'])
             ->receiving()
             ->withCount('items');
     }
