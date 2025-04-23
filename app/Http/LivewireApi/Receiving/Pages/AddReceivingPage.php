@@ -60,6 +60,19 @@ class AddReceivingPage extends Component
     }
 
     public function submit() {
+
+
+
+        foreach (request()->all() as $key => $value) {
+
+            $camelKey = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
+
+
+            if (property_exists($this, $camelKey)) {
+                $this->$camelKey = $value;
+            }
+        }
+
         $this->validate();
         $categoryId = GoodsTransactionCategory::receiving()->pluck('id')->first();
         $transaction = GoodsTransaction::create([
@@ -69,9 +82,10 @@ class AddReceivingPage extends Component
             'description' => $this->description
         ]);
 
+        $goods_transct  = [];
         if ($transaction) {
             foreach($this->goodsItems as $item) {
-                GoodsTransactionGoods::create([
+              $goods_transct[] =  GoodsTransactionGoods::create([
                     'transaction_id' => $transaction->id,
                     'goods_id' => $item['goodsId'],
                     'quantity' => $item['quantity'],
@@ -85,8 +99,8 @@ class AddReceivingPage extends Component
                 'type' => 'success',
                 'message' => __('Receiving added')
             ]);
-
-            return redirect()->to(route('receiving.detail', $transaction->id));
+            return [$transaction, $goods_transct];
+            // return redirect()->to(route('receiving.detail', $transaction->id));
         }
     }
 
