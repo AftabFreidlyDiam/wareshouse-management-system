@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Livewire\Goods\Pages;
+namespace App\Http\LivewireApi\Goods\Pages;
 
 use App\Models\Goods;
 use App\Models\GoodsCategory;
 use App\Models\Unit;
 use Livewire\Component;
+use Illuminate\Http\JsonResponse;
 
 class EditGoodsPage extends Component
 {
@@ -29,7 +30,9 @@ class EditGoodsPage extends Component
         'description' => 'max:200',
         'stockLimit' => 'numeric|min:0',
         'unitId' => 'required',
-        'price' => 'numeric|min:0'
+        'price' => 'numeric|min:0',
+        'categoryIds' => 'required|array',
+        'categoryIds.*' => 'exists:wms_goods_categories,id',
     ];
 
     public function mount($id) {
@@ -41,6 +44,7 @@ class EditGoodsPage extends Component
 
     public function loadGoods() {
         $this->goods = Goods::where('id', $this->goodsId)->first();
+
 
         if ($this->goods) {
             $this->unitId = $this->goods->unit_id;
@@ -64,10 +68,26 @@ class EditGoodsPage extends Component
         $this->units = Unit::all(['id', 'name', 'symbol']);
     }
 
-    public function submit() {
+    public function submit():JsonResponse {
 
-        // dd(request()->all());
+        // Hydrate Livewire properties manually
+
+        foreach (request()->all() as $key => $value) {
+            $camelKey = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
+
+            if ($key === 'minimum_stock') {
+                $this->stockLimit = $value;
+                continue;
+            }
+
+            if (property_exists($this, $camelKey)) {
+                $this->$camelKey = $value;
+            }
+        }
+
         $this->validate();
+
+        $this->goods = Goods::where('id', request()->goodsId)->first();
 
         $this->goods->update([
             'name' => $this->name,
@@ -77,15 +97,18 @@ class EditGoodsPage extends Component
             'unit_id' => $this->unitId,
             'description' => $this->description,
         ]);
+
         if ($this->goods) {
             $this->goods->categories()->sync($this->categoryIds);
         }
 
-        return redirect()->to(route('goods.index'));
+        return new JsonResponse($this->goods);
     }
 
-    public function render()
+    public function getEdit( $id )
     {
-        return view('livewire.goods.pages.edit-goods-page');
+        $this->mount($id);
+        return new JsonResponse($this->goods);
     }
+
 }

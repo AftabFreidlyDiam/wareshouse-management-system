@@ -21,6 +21,7 @@ class GoodsCategory extends Model
     ];
 
     public function goods() : BelongsToMany {
+
         return $this->belongsToMany(
             Goods::class,
             'wms_goods_categories_goods',
