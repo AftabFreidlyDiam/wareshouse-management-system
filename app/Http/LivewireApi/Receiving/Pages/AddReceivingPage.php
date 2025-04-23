@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Receiving\Pages;
+namespace App\Http\LivewireApi\Receiving\Pages;
 
 use App\Events\GoodsTransactionCreated;
 use App\Models\Goods;

@@ -26,7 +26,6 @@ class AddShipperPage extends Component
                 $this->$camelKey = $value;
             }
         }
-        // dd(request()->cp_phone);
         $this->validate();
 
 

@@ -92,15 +92,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
             ->name('api.shipper.update');
     });
 
-    // Route::prefix('/receiving')->group(function() {
-    //     Route::get('/', App\Http\Livewire\Receiving\Pages\IndexPage::class)
-    //         ->name('receiving.index');
-    //     Route::get('{id}/detail', App\Http\Livewire\Receiving\Pages\DetailReceivingPage::class)
-    //         ->name('receiving.detail');
-    //     Route::get('/add', App\Http\Livewire\Receiving\Pages\AddReceivingPage::class)
-    //         ->name('receiving.add')
-    //         ->middleware('permission:goods-transaction.create');
-    // });
+    Route::prefix('/receiving')->group(function() {
+        Route::get('/', [App\Http\LivewireApi\Receiving\Pages\IndexPage::class, 'getList'])
+            ->name('receiving.index');
+        Route::get('{id}/detail', App\Http\LivewireApi\Receiving\Pages\DetailReceivingPage::class)
+            ->name('receiving.detail');
+        Route::post('/add', [App\Http\LivewireApi\Receiving\Pages\AddReceivingPage::class, 'submit'])
+            ->name('receiving.add')
+            ->middleware('permission:goods-transaction.create');
+    });
 
     // Route::prefix('/dispatching')->group(function() {
     //     Route::get('/', App\Http\Livewire\Dispatching\Pages\IndexPage::class)

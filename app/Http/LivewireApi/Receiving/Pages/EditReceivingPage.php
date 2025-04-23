@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Receiving\Pages;
+namespace App\Http\LivewireApi\Receiving\Pages;
 
 use Livewire\Component;
 

@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 class EditShipperPage extends Component
 {
     public string $name;
-    public string $cp_phone;
+    public string $cp_phone = '';
 
     public $shipper;
     public $shipperId;
@@ -21,6 +21,8 @@ class EditShipperPage extends Component
     ];
 
     public function mount($id) {
+        $this->shipperId = $id;
+        $this->cp_phone;
         $this->shipperId = $id;
         $this->loadShipper();
     }
@@ -49,7 +51,6 @@ class EditShipperPage extends Component
 
         $this->shipper = Shipper::where('id', $this->shipperId)->first();
 
-        dd($this->shipper);
         $this->validate();
         $this->shipper->update([
             'name' => $this->name,
