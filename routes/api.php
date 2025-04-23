@@ -95,11 +95,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::prefix('/receiving')->group(function() {
         Route::get('/', [App\Http\LivewireApi\Receiving\Pages\IndexPage::class, 'getList'])
             ->name('receiving.index');
-        Route::get('{id}/detail', App\Http\LivewireApi\Receiving\Pages\DetailReceivingPage::class)
+        Route::get('{id}/detail', [App\Http\LivewireApi\Receiving\Pages\DetailReceivingPage::class, 'getEdit'])
             ->name('receiving.detail');
         Route::post('/add', [App\Http\LivewireApi\Receiving\Pages\AddReceivingPage::class, 'submit'])
             ->name('receiving.add')
             ->middleware('permission:goods-transaction.create');
+
     });
 
     // Route::prefix('/dispatching')->group(function() {

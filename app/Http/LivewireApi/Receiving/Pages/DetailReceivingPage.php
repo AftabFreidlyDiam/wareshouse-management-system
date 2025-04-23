@@ -5,6 +5,7 @@ namespace App\Http\LivewireApi\Receiving\Pages;
 use App\Models\GoodsTransaction;
 use App\Services\PrintService;
 use Livewire\Component;
+use Illuminate\Http\JsonResponse;
 
 class DetailReceivingPage extends Component
 {
@@ -17,7 +18,8 @@ class DetailReceivingPage extends Component
     }
 
     public function loadTransaction() {
-        $this->transaction = GoodsTransaction::where('id', $this->transactionId)->first();
+        $this->transaction = GoodsTransaction::with(['creator', 'supplier','items'])
+        ->receiving()->where('id', $this->transactionId)->first();
     }
 
     public function printPDF() {
@@ -35,6 +37,11 @@ class DetailReceivingPage extends Component
         );
     }
 
+    public function getEdit( $id )
+    {
+        $this->mount($id);
+        return new JsonResponse($this->transaction);
+    }
     public function render()
     {
         return view('livewire.receiving.pages.detail-receiving-page');
